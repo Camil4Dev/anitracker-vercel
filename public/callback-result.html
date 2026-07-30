@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>AniTracker — Autorizando…</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0d1117;
+      color: #e8e8e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #161b22;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 36px 40px;
+      text-align: center;
+      max-width: 360px;
+    }
+    .icon { font-size: 48px; margin-bottom: 16px; }
+    h1 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    p  { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .accent { color: #f47521; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon" id="icon">⏳</div>
+    <h1 id="title">Conectando con AniList…</h1>
+    <p id="desc">Esta ventana se cerrará sola.</p>
+  </div>
+
+  <script>
+    // La extensión usa chrome.identity.launchWebAuthFlow que intercepta
+    // la URL final y la pasa de vuelta al background.js.
+    // Esta página es solo visual para el usuario mientras eso ocurre.
+
+    const params  = new URLSearchParams(window.location.search);
+    const hash    = window.location.hash; // #token=xxx
+    const error   = params.get("error");
+
+    if (error) {
+      document.getElementById("icon").textContent  = "✕";
+      document.getElementById("title").textContent = "No se pudo conectar";
+      document.getElementById("desc").innerHTML    =
+        `Código de error: <span class="accent">${error}</span><br>Cerrá esta ventana y probá de nuevo.`;
+    } else if (hash.startsWith("#token=")) {
+      document.getElementById("icon").textContent  = "✓";
+      document.getElementById("title").textContent = "¡Conectado!";
+      document.getElementById("desc").textContent  =
+        "Ya podés cerrar esta pestaña. La extensión quedó vinculada con tu cuenta de AniList.";
+    }
+  </script>
+</body>
+</html>
